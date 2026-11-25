@@ -12,7 +12,7 @@ const productos = [
   {
     id: '1',
     nombre: 'Audífonos inalámbricos',
-    descripcion: 'Disfruta de la mejor musica con la mejor calidad de sonido sin enredos.',
+    descripcion: 'Disfruta de la mejor musica con la mejor calidad de sonido sin enrredos.',
     precio: '$89.900',
     imagen:
       'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700',
