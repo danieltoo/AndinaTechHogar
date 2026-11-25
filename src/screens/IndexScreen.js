@@ -12,7 +12,7 @@ const productos = [
   {
     id: '1',
     nombre: 'Audífonos inalámbricos',
-    descripcion: 'Sonido de calidad para tu día.',
+    descripcion: 'Disfruta de la mejor musica con la mejor calidad de sonido sin enredos.',
     precio: '$89.900',
     imagen:
       'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700',
@@ -20,7 +20,7 @@ const productos = [
   {
     id: '2',
     nombre: 'Parlante Bluetooth',
-    descripcion: 'Disfruta tu música en cualquier lugar.',
+    descripcion: 'Disfruta tu música en cualquier lugar con nuestro parlante con sonido de calidad.',
     precio: '$129.900',
     imagen:
       'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=700',
@@ -28,7 +28,7 @@ const productos = [
   {
     id: '3',
     nombre: 'Reloj inteligente',
-    descripcion: 'Tecnología y estilo en tu muñeca.',
+    descripcion: 'Revisa la hora en la que cambia tu vida.',
     precio: '$159.900',
     imagen:
       'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700',
