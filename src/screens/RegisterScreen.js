@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,59 @@ import {
   ScrollView,
 } from 'react-native';
 
-export default function RegisterScreen() {
+import { useAuth } from '../context/AuthContext';
+
+export default function RegisterScreen({ onSuccess }) {
+  const { signUp } = useAuth();
+
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+
+  async function handleRegister() {
+    setError('');
+    setMessage('');
+
+    if (!fullName.trim() || !email.trim() || !password) {
+      setError('Completa nombre, correo y contraseña.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const data = await signUp({
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        password,
+      });
+
+      if (data.session) {
+        setMessage('Cuenta creada correctamente.');
+        onSuccess?.();
+      } else {
+        setMessage(
+          'Cuenta creada. Revisa tu correo para confirmar el registro y luego inicia sesión.'
+        );
+      }
+    } catch (err) {
+      setError(err.message || 'No se pudo registrar el usuario.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Registro de usuarios</Text>
@@ -17,32 +69,55 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Nombre completo"
+        value={fullName}
+        onChangeText={setFullName}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
+        value={email}
+        onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
 
       <TextInput
         style={styles.input}
-        placeholder="Teléfono o rol"
+        placeholder="Teléfono"
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
       />
 
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry
       />
 
-      <Pressable style={styles.boton}>
-        <Text style={styles.textoBoton}>Crear cuenta</Text>
+      <Pressable
+        style={styles.boton}
+        onPress={handleRegister}
+        disabled={loading}
+      >
+        <Text style={styles.textoBoton}>
+          {loading ? 'Registrando...' : 'Crear cuenta'}
+        </Text>
       </Pressable>
 
+      {!!error && (
+        <Text style={styles.error}>{error}</Text>
+      )}
+
+      {!!message && (
+        <Text style={styles.mensaje}>{message}</Text>
+      )}
+
       <Text style={styles.aviso}>
-        Formulario visual. El registro se conectará después.
+        El rol inicial se asigna automáticamente como usuario.
       </Text>
     </ScrollView>
   );
@@ -75,6 +150,14 @@ const styles = StyleSheet.create({
   textoBoton: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+  error: {
+    color: '#B91C1C',
+    marginTop: 12,
+  },
+  mensaje: {
+    color: '#166534',
+    marginTop: 12,
   },
   aviso: {
     marginTop: 15,

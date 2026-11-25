@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,43 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default function LoginScreen() {
+import { useAuth } from '../context/AuthContext';
+
+export default function LoginScreen({ onSuccess }) {
+  const { signIn } = useAuth();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleLogin() {
+    setError('');
+
+    if (!email.trim() || !password) {
+      setError('Ingresa tu correo y contraseña.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await signIn({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      onSuccess?.();
+    } catch (err) {
+      setError(
+        err.message || 'No se pudo iniciar sesión.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Iniciar sesión</Text>
@@ -16,6 +52,8 @@ export default function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
+        value={email}
+        onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
@@ -23,16 +61,24 @@ export default function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry
       />
 
-      <Pressable style={styles.boton}>
-        <Text style={styles.textoBoton}>Ingresar</Text>
+      <Pressable
+        style={styles.boton}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={styles.textoBoton}>
+          {loading ? 'Ingresando...' : 'Ingresar'}
+        </Text>
       </Pressable>
 
-      <Text style={styles.aviso}>
-        El acceso se conectará en una fase posterior.
-      </Text>
+      {!!error && (
+        <Text style={styles.error}>{error}</Text>
+      )}
     </View>
   );
 }
@@ -65,9 +111,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
   },
-  aviso: {
-    marginTop: 15,
-    color: '#64748B',
-    textAlign: 'center',
+  error: {
+    color: '#B91C1C',
+    marginTop: 12,
   },
 });

@@ -12,13 +12,19 @@ export default function MenuHamburguesa({
   visible,
   onClose,
   onNavigate,
+  session,
+  onLogout,
 }) {
-  const opciones = [
-    { texto: 'Inicio', pantalla: 'Inicio' },
-    { texto: 'Registro', pantalla: 'Registro' },
-    { texto: 'Iniciar sesión', pantalla: 'Login' },
-    { texto: 'Usuarios registrados', pantalla: 'Usuarios' },
-  ];
+  const opciones = session
+    ? [
+        { texto: 'Inicio', pantalla: 'Inicio' },
+        { texto: 'Usuarios registrados', pantalla: 'Usuarios' },
+      ]
+    : [
+        { texto: 'Inicio', pantalla: 'Inicio' },
+        { texto: 'Registro', pantalla: 'Registro' },
+        { texto: 'Iniciar sesión', pantalla: 'Login' },
+      ];
 
   return (
     <Modal
@@ -46,11 +52,24 @@ export default function MenuHamburguesa({
             </Pressable>
           ))}
 
+          {session && (
+            <Pressable
+              style={styles.cerrarSesion}
+              onPress={onLogout}
+            >
+              <Text style={styles.textoCerrar}>
+                Cerrar sesión
+              </Text>
+            </Pressable>
+          )}
+
           <Pressable
             style={styles.cerrar}
             onPress={onClose}
           >
-            <Text style={styles.textoCerrar}>Cerrar menú</Text>
+            <Text style={styles.textoCerrar}>
+              Cerrar menú
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -85,8 +104,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#263746',
   },
+  cerrarSesion: {
+    marginTop: 20,
+    backgroundColor: '#A93226',
+    padding: 12,
+    borderRadius: 8,
+  },
   cerrar: {
-    marginTop: 25,
+    marginTop: 12,
     backgroundColor: '#123B5D',
     padding: 12,
     borderRadius: 8,

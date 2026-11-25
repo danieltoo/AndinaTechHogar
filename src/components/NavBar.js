@@ -1,27 +1,27 @@
 
 import React from 'react';
 import {
-  View,
   Text,
   Pressable,
   StyleSheet,
   ScrollView,
 } from 'react-native';
 
-export default function NavBar({ onNavigate }) {
-  const opciones = [
-    'Inicio',
-    'Registro',
-    'Login',
-    'Usuarios',
-  ];
-
-  const nombres = {
-    Inicio: 'Inicio',
-    Registro: 'Registro',
-    Login: 'Iniciar sesión',
-    Usuarios: 'Usuarios',
-  };
+export default function NavBar({
+  onNavigate,
+  session,
+  onLogout,
+}) {
+  const opciones = session
+    ? [
+        { texto: 'Inicio', pantalla: 'Inicio' },
+        { texto: 'Usuarios', pantalla: 'Usuarios' },
+      ]
+    : [
+        { texto: 'Inicio', pantalla: 'Inicio' },
+        { texto: 'Registro', pantalla: 'Registro' },
+        { texto: 'Iniciar sesión', pantalla: 'Login' },
+      ];
 
   return (
     <ScrollView
@@ -29,17 +29,28 @@ export default function NavBar({ onNavigate }) {
       showsHorizontalScrollIndicator={false}
       style={styles.nav}
     >
-      {opciones.map((pantalla) => (
+      {opciones.map((opcion) => (
         <Pressable
-          key={pantalla}
+          key={opcion.pantalla}
           style={styles.boton}
-          onPress={() => onNavigate(pantalla)}
+          onPress={() => onNavigate(opcion.pantalla)}
         >
           <Text style={styles.texto}>
-            {nombres[pantalla]}
+            {opcion.texto}
           </Text>
         </Pressable>
       ))}
+
+      {session && (
+        <Pressable
+          style={styles.boton}
+          onPress={onLogout}
+        >
+          <Text style={styles.texto}>
+            Cerrar sesión
+          </Text>
+        </Pressable>
+      )}
     </ScrollView>
   );
 }

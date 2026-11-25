@@ -7,16 +7,36 @@ import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import UsersScreen from '../screens/UsersScreen';
 
-export default function WorkArea({ activeScreen }) {
+export default function WorkArea({
+  activeScreen,
+  isAuthenticated,
+  onNavigate,
+}) {
   function renderScreen() {
     switch (activeScreen) {
       case 'Registro':
-        return <RegisterScreen />;
+        return (
+          <RegisterScreen
+            onSuccess={() => onNavigate('Login')}
+          />
+        );
 
       case 'Login':
-        return <LoginScreen />;
+        return (
+          <LoginScreen
+            onSuccess={() => onNavigate('Usuarios')}
+          />
+        );
 
       case 'Usuarios':
+        if (!isAuthenticated) {
+          return (
+            <LoginScreen
+              onSuccess={() => onNavigate('Usuarios')}
+            />
+          );
+        }
+
         return <UsersScreen />;
 
       case 'Inicio':
